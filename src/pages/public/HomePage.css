@@ -1,0 +1,28 @@
+.header {
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(0, 0, 0, 0.342),
+      rgba(0, 0, 0, 0.377)
+    ),
+    url("../../assets/images/bmw_1.jpg");
+  height: 55vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top;
+}
+.headerBg {
+  background-image: linear-gradient(to top right, black, rgb(8, 8, 8));
+}
+
+.section2 {
+  height: 50vh;
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(0, 29, 53, 0.705),
+      rgba(3, 44, 63, 0.774)
+    ),
+    url("../../assets/images/section2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top;
+}

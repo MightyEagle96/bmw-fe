@@ -1,0 +1,11 @@
+.vendor {
+  height: max-content;
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(24, 24, 24, 0.39),
+      rgba(2, 12, 32, 0.705)
+    ),
+    url("../../assets/images/bmwCar1.jpg");
+  background-size: cover;
+  background-position: center;
+}

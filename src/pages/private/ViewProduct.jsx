@@ -11,6 +11,7 @@ import {
 } from "../../components/MyButtons";
 import { UploadFile, PhotoCamera } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import ReactJsAlert from "reactjs-alert";
 
 const Input = styled("input")({
   display: "none",
@@ -20,17 +21,18 @@ export default function ViewProduct() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedFile, setSelectedFile] = useState([]);
+  const [images, setImages] = useState([]);
 
   const changeHandler = (event) => {
     for (let i = 0; i < event.target.files.length; i++) {
-      if (event.target.files[i].size > 1000000) {
-      } else
-        setSelectedFile((oldArray) => [...oldArray, event.target.files[i]]);
+      if (event.target.files[i].size < 1000000) {
+        setImages((oldArray) => [...oldArray, event.target.files[i]]);
+      } else {
+      }
     }
   };
   const deletePhotos = () => {
-    setSelectedFile([]);
+    setImages([]);
   };
   const getProduct = async () => {
     try {
@@ -44,6 +46,23 @@ export default function ViewProduct() {
     } catch (error) {
       setLoading(false);
     }
+  };
+
+  const uploadPhotos = async () => {
+    setLoading(true);
+
+    const formData = new FormData();
+    images.forEach((img) => {
+      if (img) {
+        formData.append("images", img);
+      }
+    });
+    const path = `uploadProductImages/${product._id}`;
+    const res = await httpService.patch(path, formData);
+    if (res) {
+      window.location.reload();
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -118,9 +137,9 @@ export default function ViewProduct() {
                   {
                     <div>
                       <div className="d-flex flex-wrap mb-2">
-                        {selectedFile.length > 0 ? (
+                        {images.length > 0 ? (
                           <>
-                            {selectedFile.map((file, i) => (
+                            {images.map((file, i) => (
                               <>
                                 <Avatar
                                   sx={{ width: 100, height: 100 }}
@@ -134,12 +153,14 @@ export default function ViewProduct() {
                           </>
                         ) : null}
                       </div>
-                      {selectedFile.length > 0 ? (
+                      {images.length > 0 ? (
                         <Stack direction={"row"} spacing={1}>
                           <PrimaryButton
                             label="upload"
                             fullWidth={false}
                             endIcon={<UploadFile />}
+                            onClick={uploadPhotos}
+                            loading={loading}
                           />
                           <PrimaryTextButton
                             label="Delete photos"

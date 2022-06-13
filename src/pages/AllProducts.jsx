@@ -32,7 +32,7 @@ export default function AllProducts() {
     <div>
       <Container>
         <div className="mt-3">
-          <div className="">
+          <div className="mb-2">
             <Stack direction={"row"} spacing={1}>
               <div
                 className="p-3 col-md-2"
@@ -55,6 +55,7 @@ export default function AllProducts() {
                   title={product.title}
                   amount={product.amount}
                   id={product._id}
+                  imageUrl={product.imageUrls[0]}
                 />
               ))}
             </div>

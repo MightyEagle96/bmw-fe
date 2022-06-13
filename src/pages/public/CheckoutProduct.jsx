@@ -3,7 +3,7 @@ import { Container, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { httpService } from "../../services/services";
 import brand from "../../assets/images/brand.png";
-import { Stack, Typography } from "@mui/material";
+import { Avatar, Stack, Typography } from "@mui/material";
 import { PrimaryButton, SecondaryIconButton } from "../../components/MyButtons";
 import {
   ArrowDownward,
@@ -13,9 +13,16 @@ import {
 import TextInputComponent from "../../components/TextInputComponent";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { LargeLoading } from "../../assets/aesthetics/Loading";
+import { Carousel } from "react-bootstrap";
+import ReactJsAlert from "reactjs-alert";
 
 export default function CheckoutProduct() {
   const [loading, setLoading] = useState(false);
+
+  const [recording, setRecording] = useState(false);
+
+  const [alertObject, setAlertObject] = useState({});
+
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   let [quantity, setQuantity] = useState(1);
@@ -29,16 +36,20 @@ export default function CheckoutProduct() {
     payment_options: "card,mobilemoney,ussd",
     customer: {
       email: userForm.email,
-      phonenumber: userForm.phoneNumber,
+      phone_number: userForm.phoneNumber,
       name: userForm.name,
     },
     customizations: {
       title: product ? product.title : "",
       description: product ? product.description : "",
-      logo: "https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg",
+      logo: product ? product.imageUrls[0] : "",
     },
   };
+  const [index, setIndex] = useState(0);
 
+  const handleSelect = (selectedIndex, e) => {
+    setIndex(selectedIndex);
+  };
   const ViewProduct = async () => {
     try {
       setLoading(true);
@@ -61,18 +72,49 @@ export default function CheckoutProduct() {
     ViewProduct();
   }, []);
 
+  const recordTransaction = async (response) => {
+    const path = "recordPayment";
+
+    const res = await httpService.post(path, {
+      ...response,
+      product: product._id,
+      quantity,
+    });
+
+    if (res) {
+      setAlertObject(res.data);
+    }
+
+    // console.log(res);
+  };
+
   return (
     <div>
       <Container>
+        <ReactJsAlert
+          status={alertObject.status} // true or false
+          type={alertObject.type} // success, warning, error, info
+          title={alertObject.title}
+          quotes={true}
+          quote={alertObject.quote}
+          autoCloseIn={3000}
+          Close={() => setAlertObject({ ...alertObject, status: false })}
+          // Close={() => setStatus(false)}
+        />
+
         <div className="d-none d-md-block mb-3">
           <div className="border p-3">
             <Row>
               <div className="col-md-6 border-end d-flex align-items-center">
-                <img
-                  src={product && product.imageUrl ? product.imageUrl : brand}
-                  className="img-fluid"
-                  alt="logo"
-                />
+                <Carousel activeIndex={index} onSelect={handleSelect}>
+                  {product && product.imageUrls
+                    ? product.imageUrls.map((img, i) => (
+                        <Carousel.Item>
+                          <img src={img} key={i} alt={i} />
+                        </Carousel.Item>
+                      ))
+                    : null}
+                </Carousel>
               </div>
               <div className="col-md-6 d-flex align-items-end">
                 <div className="p-3">
@@ -181,11 +223,14 @@ export default function CheckoutProduct() {
                           <div className="">
                             <PrimaryButton
                               endIcon={<ArrowForwardIos />}
+                              loading={recording}
                               label="checkout"
                               onClick={() => {
                                 handleFlutterPayment({
                                   callback: (response) => {
                                     console.log(response);
+                                    recordTransaction(response);
+
                                     closePaymentModal(); // this will close the modal programmatically
                                   },
                                   onClose: () => {},

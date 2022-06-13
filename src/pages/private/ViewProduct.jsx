@@ -1,14 +1,17 @@
-import { Stack, Typography, IconButton, Avatar } from "@mui/material";
+import {
+  Stack,
+  Typography,
+  IconButton,
+  Avatar,
+  LinearProgress,
+  Box,
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { Container, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { LargeLoading } from "../../assets/aesthetics/Loading";
 import { httpService } from "../../services/services";
-import {
-  PrimaryButton,
-  PrimaryTextButton,
-  SecondaryButton,
-} from "../../components/MyButtons";
+import { PrimaryButton, PrimaryTextButton } from "../../components/MyButtons";
 import { UploadFile, PhotoCamera } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import ReactJsAlert from "reactjs-alert";
@@ -22,7 +25,7 @@ export default function ViewProduct() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState([]);
-
+  const [progress, setProgress] = React.useState(10);
   const changeHandler = (event) => {
     for (let i = 0; i < event.target.files.length; i++) {
       if (event.target.files[i].size < 1000000) {
@@ -64,9 +67,31 @@ export default function ViewProduct() {
     }
     setLoading(false);
   };
+  function LinearProgressWithLabel(props) {
+    return (
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ width: "100%", mr: 1 }}>
+          <LinearProgress variant="determinate" {...props} />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(
+            props.value
+          )}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  }
 
   useEffect(() => {
     getProduct();
+    // const timer = setInterval(() => {
+    //   setProgress((prevProgress) =>
+    //     prevProgress >= 100 ? 10 : prevProgress + 10
+    //   );
+    // }, 800);
+    // return () => {
+    //   clearInterval(timer);
+    // };
   }, []);
   return (
     <div>
@@ -111,29 +136,56 @@ export default function ViewProduct() {
                   </Stack>
 
                   <div className="mt-3">
-                    <SecondaryButton label={"update product"} />
+                    <PrimaryTextButton label={"update product"} />
                   </div>
                 </div>
                 <div className="col-md-6">
                   {product.imageUrls.length === 0 ? (
-                    <label htmlFor="icon-button-file">
-                      <Input
-                        accept="image/*"
-                        id="icon-button-file"
-                        type="file"
-                        multiple
-                        onChange={changeHandler}
-                      />
-                      Upload product images
-                      <IconButton
-                        color="primary"
-                        aria-label="upload picture"
-                        component="span"
-                      >
-                        <PhotoCamera />
-                      </IconButton>
-                    </label>
-                  ) : null}
+                    <div>
+                      {" "}
+                      <label htmlFor="icon-button-file">
+                        <Input
+                          accept="image/*"
+                          id="icon-button-file"
+                          type="file"
+                          multiple
+                          onChange={changeHandler}
+                        />
+                        Upload product images
+                        <IconButton
+                          color="primary"
+                          aria-label="upload picture"
+                          component="span"
+                        >
+                          <PhotoCamera />
+                        </IconButton>
+                      </label>
+                      <div>
+                        <Typography variant="caption">
+                          maximum of 10 photos not more than 1mb
+                        </Typography>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <Typography variant="caption">Product Images</Typography>
+                      <div className="d-flex flex-wrap mt-3">
+                        {product.imageUrls.map((item, i) => (
+                          <>
+                            <Avatar
+                              src={item}
+                              variant="rounded"
+                              sx={{ width: 170, height: 120 }}
+                              className="me-2 mb-2"
+                            />
+                          </>
+                        ))}{" "}
+                        <div className="d-flex align-items-center">
+                          <PrimaryTextButton label="delete photos" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {
                     <div>
                       <div className="d-flex flex-wrap mb-2">
@@ -168,6 +220,9 @@ export default function ViewProduct() {
                           />
                         </Stack>
                       ) : null}
+                      <Box sx={{ width: "100%" }}>
+                        <LinearProgressWithLabel value={progress} />
+                      </Box>
                     </div>
                   }
                 </div>

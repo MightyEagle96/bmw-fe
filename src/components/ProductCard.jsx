@@ -18,6 +18,7 @@ export default function ProductCard({ imageUrl, title, amount, id }) {
             component="img"
             image={imageUrl ? imageUrl : brand}
             alt={title}
+            height="300"
           />
 
           <CardContent>

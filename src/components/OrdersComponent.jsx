@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { httpService, loggedInUser } from "../services/services";
 import Swal from "sweetalert2";
+import { secondaryTheme, theme } from "../utils/labels";
 
 export default function OrdersComponent() {
   const [orders, setOrders] = useState([]);
@@ -35,7 +36,7 @@ export default function OrdersComponent() {
             </div>
           </div>
           <div className="d-flex align-items-center">
-            <Button onClick={shipProduct}>
+            <Button onClick={shipProduct} variant="outlined">
               Ship this product for this customer
             </Button>
           </div>
@@ -84,7 +85,16 @@ export default function OrdersComponent() {
   ];
 
   const shipProduct = async () => {
-    Swal.fire({ icon: "question", title: "Ship this product" });
+    Swal.fire({
+      icon: "question",
+      title: "Ship Product",
+      text: "Do you want to put this product in transit?",
+      confirmButtonText: "YES",
+      cancelButtonText: "NO",
+      showCancelButton: true,
+      confirmButtonColor: theme.normal,
+      cancelButtonColor: secondaryTheme.normal,
+    });
   };
   return (
     <div>

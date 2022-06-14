@@ -1,7 +1,8 @@
-import { Chip, Typography } from "@mui/material";
+import { Button, Chip, Stack, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { httpService, loggedInUser } from "../services/services";
+import Swal from "sweetalert2";
 
 export default function OrdersComponent() {
   const [orders, setOrders] = useState([]);
@@ -19,15 +20,26 @@ export default function OrdersComponent() {
   const ExpandableComponent = ({ data }) => {
     return (
       <div className="p-2">
-        <Typography variant="body2" gutterBottom>
-          Name: {data.customer.name}
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          Email: {data.customer.email}
-        </Typography>
-        <Typography variant="body2">
-          Address: {data.customer.address}
-        </Typography>
+        <Stack direction={"row"} spacing={1}>
+          <div className="border-end">
+            <div className="p-2">
+              <Typography variant="body2" gutterBottom>
+                Name: {data.customer.name}
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                Email: {data.customer.email}
+              </Typography>
+              <Typography variant="body2">
+                Address: {data.customer.address}
+              </Typography>
+            </div>
+          </div>
+          <div className="d-flex align-items-center">
+            <Button onClick={shipProduct}>
+              Ship this product for this customer
+            </Button>
+          </div>
+        </Stack>
       </div>
     );
   };
@@ -36,10 +48,10 @@ export default function OrdersComponent() {
     switch (status) {
       case "pending":
         return "error";
-      case "fulfilled":
+      case "shipped":
         return "warning";
       default:
-        return "success";
+        return "delivered";
     }
   };
 
@@ -70,6 +82,10 @@ export default function OrdersComponent() {
       ),
     },
   ];
+
+  const shipProduct = async () => {
+    Swal.fire({ icon: "question", title: "Ship this product" });
+  };
   return (
     <div>
       <div>

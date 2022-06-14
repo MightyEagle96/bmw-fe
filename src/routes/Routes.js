@@ -12,6 +12,7 @@ import Dashboard from "../pages/private/Dashboard";
 import CompanyProducts from "../pages/private/CompanyProducts";
 import CheckoutProduct from "../pages/public/CheckoutProduct";
 import ViewProduct from "../pages/private/ViewProduct";
+import ViewOrders from "../pages/private/ViewOrders";
 
 const publicRoutes = [
   { path: "/", component: HomePage },
@@ -31,6 +32,7 @@ const privateRoutes = [
   { path: "/createProduct", component: CreateProduct },
   { path: "/companyProducts", component: CompanyProducts },
   { path: "/viewProduct/:id", component: ViewProduct },
+  { path: "/viewOrders", component: ViewOrders },
   { path: "*", component: NotFound },
 ];
 export { publicRoutes, privateRoutes };

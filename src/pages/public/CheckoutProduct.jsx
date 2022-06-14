@@ -26,7 +26,8 @@ export default function CheckoutProduct() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   let [quantity, setQuantity] = useState(1);
-  const [userForm, setUserForm] = useState({});
+  const defaultData = { name: "", address: "", phone_number: "", email: "" };
+  const [userForm, setUserForm] = useState(defaultData);
 
   const config = {
     public_key: process.env.REACT_APP_FLUKEY,
@@ -38,6 +39,7 @@ export default function CheckoutProduct() {
       email: userForm.email,
       phone_number: userForm.phoneNumber,
       name: userForm.name,
+      address: userForm.address,
     },
     customizations: {
       title: product ? product.title : "",
@@ -79,6 +81,7 @@ export default function CheckoutProduct() {
       ...response,
       product: product._id,
       quantity,
+      account: product.account,
     });
 
     if (res) {
@@ -210,7 +213,7 @@ export default function CheckoutProduct() {
                           >
                             <TextInputComponent
                               label="Phone Number"
-                              name="phoneNumber"
+                              name="phone_number"
                               handleChange={handleChange}
                             />
                             <TextInputComponent
@@ -228,9 +231,14 @@ export default function CheckoutProduct() {
                               onClick={() => {
                                 handleFlutterPayment({
                                   callback: (response) => {
-                                    console.log(response);
-                                    recordTransaction(response);
+                                    //console.log(response);
+                                    response.customer.address =
+                                      userForm.address;
+                                    response.customer.phone_number =
+                                      userForm.phone_number;
 
+                                    recordTransaction(response);
+                                    setUserForm(defaultData);
                                     closePaymentModal(); // this will close the modal programmatically
                                   },
                                   onClose: () => {},

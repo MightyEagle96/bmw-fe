@@ -37,7 +37,7 @@ export default function SideMenuComponent() {
     {
       text: "Orders",
       icon: <ShoppingCart />,
-      redirectTo: "/subscribers",
+      redirectTo: "/viewOrders",
     },
   ];
   return (

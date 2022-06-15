@@ -1,4 +1,5 @@
-import { Button, Chip, Stack, Typography } from "@mui/material";
+import { Chip, Stack, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { httpService, loggedInUser } from "../services/services";
@@ -7,6 +8,7 @@ import { secondaryTheme, theme } from "../utils/labels";
 
 export default function OrdersComponent() {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
   const GetOrders = async () => {
     const path = `viewOrders/${loggedInUser._id}`;
 
@@ -36,9 +38,19 @@ export default function OrdersComponent() {
             </div>
           </div>
           <div className="d-flex align-items-center">
-            <Button onClick={shipProduct} variant="outlined">
-              Ship this product for this customer
-            </Button>
+            {/* <Button onClick={shipProduct} variant="outlined">
+              Ship product
+            </Button> */}
+            <LoadingButton
+              loading={loading}
+              loadingIndicator="Loading..."
+              variant="outlined"
+              onClick={() => {
+                shipProduct(data._id);
+              }}
+            >
+              Ship product
+            </LoadingButton>
           </div>
         </Stack>
       </div>
@@ -84,7 +96,7 @@ export default function OrdersComponent() {
     },
   ];
 
-  const shipProduct = async () => {
+  const shipProduct = async (id) => {
     Swal.fire({
       icon: "question",
       title: "Ship Product",
@@ -94,6 +106,14 @@ export default function OrdersComponent() {
       showCancelButton: true,
       confirmButtonColor: theme.normal,
       cancelButtonColor: secondaryTheme.normal,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setLoading(false);
+        const path = `putInTransit/${id}`;
+
+        await httpService.patch(path, {});
+        setLoading(false);
+      }
     });
   };
   return (

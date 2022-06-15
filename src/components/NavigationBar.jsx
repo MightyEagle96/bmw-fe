@@ -1,15 +1,30 @@
-import React, { useContext } from "react";
-import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
+import React, { useContext, useState } from "react";
+import { Navbar, Container, Nav } from "react-bootstrap";
 import { loggedInUser, handleLogout } from "../services/services";
 import { Badge, Typography } from "@mui/material";
-import { ReloadContext } from "../Contexts/ReloadContext";
+import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
 import { Login, Logout, Notifications } from "@mui/icons-material";
 import brand from "../assets/images/brand.png";
+import "./NavigationBar.css";
 
 export default function NavigationBar() {
-  const { adminNotifications } = useContext(ReloadContext);
+  const { theme } = useContext(ChangeNavbarTheme);
+  const [navbar, setNavbar] = useState(false);
+
+  const changeBg = () => {
+    if (window.scrollY > 80) {
+      setNavbar(true);
+    } else setNavbar(false);
+  };
+
+  window.addEventListener("scroll", changeBg);
   return (
-    <Navbar expand="lg" fixed="top" bg="light">
+    <Navbar
+      expand="lg"
+      fixed="top"
+      className={navbar ? "navBar active" : "navbar"}
+      variant={theme || "light"}
+    >
       <Container>
         <Navbar.Brand href="/">
           <img src={brand} alt="brand" width="30" height="30" />
@@ -19,24 +34,14 @@ export default function NavigationBar() {
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/ourProducts">Our Products</Nav.Link>
-            {/* <NavDropdown title="Actions" id="basic-nav-dropdown">
-              <NavDropdown.Item href="/createProduct">
-                Create Product
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
-            </NavDropdown> */}
           </Nav>
           <Nav className="ms-auto">
             {loggedInUser ? (
               <>
                 <Nav.Link>
-                  <Badge color="error" badgeContent={adminNotifications}>
+                  {/* <Badge color="error" badgeContent={adminNotifications}>
                     <Notifications />
-                  </Badge>
+                  </Badge> */}
                 </Nav.Link>
                 <Nav.Link>
                   <Typography>{loggedInUser.name.split(" ")[0]}</Typography>

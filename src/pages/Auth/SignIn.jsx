@@ -7,6 +7,8 @@ import TextInputComponent from "../../components/TextInputComponent";
 import { httpService } from "../../services/services";
 
 import { PrimaryButton } from "../../components/MyButtons";
+import MyGutterButtom from "../../components/MyGutterBottom";
+import MyGutterBottom from "../../components/MyGutterBottom";
 
 export default function SignIn() {
   const [loading, setLoading] = useState(false);
@@ -44,6 +46,7 @@ export default function SignIn() {
     <div>
       <Container>
         <div className="p-4 d-none d-md-block">
+          <MyGutterBottom />
           <div className="d-flex justify-content-center">
             <div className="col-md-5">
               <div>
@@ -84,40 +87,35 @@ export default function SignIn() {
           </div>
         </div>
         <div className="d-sm-block d-md-none pt-4 pb-4">
+          <MyGutterBottom />
           <div className="">
-            <div className="">
-              <div>
-                <Typography
-                  variant="body1"
-                  color="GrayText"
-                  textAlign={"center"}
-                >
-                  Sign in to your bwm-naija account
-                </Typography>
-              </div>
-              <div className=" mt-3">
-                <form onSubmit={Login}>
-                  <TextInputComponent
-                    label={"Email Address"}
-                    name="email"
-                    handleChange={handleChange}
-                    value={account.email}
-                  />
-                  <TextInputComponent
-                    label={"Password"}
-                    name="password"
-                    type="password"
-                    handleChange={handleChange}
-                    value={account.password}
-                  />
-                  <PrimaryButton
-                    label={"Sign in"}
-                    fullWidth={true}
-                    type={"submit"}
-                    loading={loading}
-                  />
-                </form>
-              </div>
+            <div>
+              <Typography variant="body1" color="GrayText" textAlign={"center"}>
+                Sign in to your bwm-naija account
+              </Typography>
+            </div>
+            <div className=" mt-3">
+              <form onSubmit={Login}>
+                <TextInputComponent
+                  label={"Email Address"}
+                  name="email"
+                  handleChange={handleChange}
+                  value={account.email}
+                />
+                <TextInputComponent
+                  label={"Password"}
+                  name="password"
+                  type="password"
+                  handleChange={handleChange}
+                  value={account.password}
+                />
+                <PrimaryButton
+                  label={"Sign in"}
+                  fullWidth={true}
+                  type={"submit"}
+                  loading={loading}
+                />
+              </form>
             </div>
           </div>
         </div>

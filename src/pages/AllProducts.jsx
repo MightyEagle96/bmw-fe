@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container } from "react-bootstrap";
 import Loading from "../assets/aesthetics/Loading";
 import { httpService } from "../services/services";
 import ProductCard from "../components/ProductCard";
 import { Stack, Typography } from "@mui/material";
 import { theme } from "../utils/labels";
+import MyGutterBottom from "../components/MyGutterBottom";
+import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { setTheme } = useContext(ChangeNavbarTheme);
 
   const GetProducts = async () => {
     try {
@@ -24,12 +27,22 @@ export default function AllProducts() {
     }
   };
 
+  const changeTheme = () => {
+    if (window.scrollY > 80) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  };
+  window.addEventListener("scroll", changeTheme);
   useEffect(() => {
     GetProducts();
+    setTheme("light");
   }, []);
 
   return (
     <div>
+      <MyGutterBottom />
       <Container>
         <div className="mt-3">
           <div className="mb-2">

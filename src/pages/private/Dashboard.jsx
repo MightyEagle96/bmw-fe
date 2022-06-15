@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Row } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import OrdersComponent from "../../components/OrdersComponent";
 import {
   DeliveredStatus,

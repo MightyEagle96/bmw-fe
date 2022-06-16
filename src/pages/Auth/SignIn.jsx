@@ -1,14 +1,12 @@
 import { Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
-
 import TextInputComponent from "../../components/TextInputComponent";
-
 import { httpService } from "../../services/services";
-
 import { PrimaryButton } from "../../components/MyButtons";
-
 import MyGutterBottom from "../../components/MyGutterBottom";
+import { GoogleLogin } from "@react-oauth/google";
+import FacebookLogin from "react-facebook-login";
 
 export default function SignIn() {
   const [loading, setLoading] = useState(false);
@@ -41,6 +39,19 @@ export default function SignIn() {
 
   const handleChange = (e) => {
     setAccount({ ...account, [e.target.name]: e.target.value });
+  };
+
+  const handleFailure = (result) => {
+    console.error(result);
+  };
+  const handleLogin = (googleData) => {
+    console.log(googleData);
+    localStorage.setItem("googleData", googleData);
+  };
+
+  const responseFacebook = (response) => {
+    console.log(response);
+    localStorage.setItem("facebookData", response);
   };
   return (
     <div>
@@ -82,6 +93,25 @@ export default function SignIn() {
                     loading={loading}
                   />
                 </form>
+                <div className="mt-3">
+                  <div className="d-flex justify-content-between">
+                    <div className="d-flex align-items-center">
+                      <GoogleLogin
+                        onSuccess={handleLogin}
+                        onError={handleFailure}
+                      ></GoogleLogin>
+                    </div>
+                    <div>
+                      <FacebookLogin
+                        appId={process.env.REACT_APP_FACEBOOK_ID}
+                        autoLoad={true}
+                        fields="name,email,picture"
+                        // onClick={componentClicked}
+                        callback={responseFacebook}
+                      ></FacebookLogin>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -116,6 +146,25 @@ export default function SignIn() {
                   loading={loading}
                 />
               </form>
+            </div>
+            <div className="mt-3">
+              <div className="d-flex justify-content-between">
+                <div className="d-flex align-items-center">
+                  <GoogleLogin
+                    onSuccess={handleLogin}
+                    onError={handleFailure}
+                  ></GoogleLogin>
+                </div>
+                <div>
+                  <FacebookLogin
+                    appId={process.env.REACT_APP_FACEBOOK_ID}
+                    autoLoad={true}
+                    fields="name,email,picture"
+                    // onClick={componentClicked}
+                    callback={responseFacebook}
+                  ></FacebookLogin>
+                </div>
+              </div>
             </div>
           </div>
         </div>

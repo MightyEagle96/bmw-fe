@@ -105,6 +105,7 @@ export default function CheckoutProduct() {
 
   const responseFacebook = (response) => {
     console.log(response);
+    localStorage.setItem("facebookData", response);
   };
   return (
     <div>
@@ -255,7 +256,9 @@ export default function CheckoutProduct() {
                                 ></GoogleLogin>
                               </div>
                               <div className="d-flex align-items-center">
-                                <Typography variant="body2">or</Typography>
+                                <Typography variant="body2" color="GrayText">
+                                  or
+                                </Typography>
                               </div>
                               <div>
                                 <FacebookLogin

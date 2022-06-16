@@ -10,34 +10,39 @@ import { Row } from "react-bootstrap";
 import SideMenuComponent from "./components/SideMenuComponent";
 import Footer from "./components/Footer";
 import { ChangeNavbarTheme } from "./Contexts/ReloadContext";
-
+import { GoogleOAuthProvider } from "@react-oauth/google";
 function App() {
   const [theme, setTheme] = useState("");
 
   return (
     <div className="app">
-      <ChangeNavbarTheme.Provider value={{ theme, setTheme }}>
-        <NavigationBar />
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+        <ChangeNavbarTheme.Provider value={{ theme, setTheme }}>
+          <NavigationBar />
 
-        {loggedInUser ? (
-          <>
-            <div className="p-4"></div>
-            <div className="p-1"></div>
+          {loggedInUser ? (
+            <>
+              <div className="p-4"></div>
+              <div className="p-1"></div>
 
-            <Row>
-              <div className="col-md-3" style={{ backgroundColor: "#2c387e" }}>
-                <SideMenuComponent />
-              </div>
-              <div className="col-md-9 p-3">
-                <MainRoutes />
-              </div>
-            </Row>
-          </>
-        ) : (
-          <MainRoutes />
-        )}
-        <Footer />
-      </ChangeNavbarTheme.Provider>
+              <Row>
+                <div
+                  className="col-md-3"
+                  style={{ backgroundColor: "#2c387e" }}
+                >
+                  <SideMenuComponent />
+                </div>
+                <div className="col-md-9 p-3">
+                  <MainRoutes />
+                </div>
+              </Row>
+            </>
+          ) : (
+            <MainRoutes />
+          )}
+          <Footer />
+        </ChangeNavbarTheme.Provider>
+      </GoogleOAuthProvider>
     </div>
   );
 }

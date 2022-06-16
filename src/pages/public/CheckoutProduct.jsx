@@ -15,6 +15,9 @@ import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { LargeLoading } from "../../assets/aesthetics/Loading";
 import { Carousel } from "react-bootstrap";
 import ReactJsAlert from "reactjs-alert";
+import MyGutterBottom from "../../components/MyGutterBottom";
+import { GoogleLogin } from "@react-oauth/google";
+import FacebookLogin from "react-facebook-login";
 
 export default function CheckoutProduct() {
   const [loading, setLoading] = useState(false);
@@ -70,6 +73,7 @@ export default function CheckoutProduct() {
     setUserForm({ ...userForm, [e.target.name]: e.target.value });
 
   const handleFlutterPayment = useFlutterwave(config);
+
   useEffect(() => {
     ViewProduct();
   }, []);
@@ -91,6 +95,17 @@ export default function CheckoutProduct() {
     // console.log(res);
   };
 
+  const handleFailure = (result) => {
+    console.error(result);
+  };
+  const handleLogin = (googleData) => {
+    console.log(googleData);
+    localStorage.setItem("googleData", googleData);
+  };
+
+  const responseFacebook = (response) => {
+    console.log(response);
+  };
   return (
     <div>
       <Container>
@@ -104,9 +119,9 @@ export default function CheckoutProduct() {
           Close={() => setAlertObject({ ...alertObject, status: false })}
           // Close={() => setStatus(false)}
         />
-
+        <MyGutterBottom />
         <div className="d-none d-md-block mb-3">
-          <div className="border p-3">
+          <div className="">
             <Row>
               <div className="col-md-6 border-end d-flex align-items-center">
                 <Carousel activeIndex={index} onSelect={handleSelect}>
@@ -119,7 +134,7 @@ export default function CheckoutProduct() {
                     : null}
                 </Carousel>
               </div>
-              <div className="col-md-6 d-flex align-items-end">
+              <div className="col-md-6 d-flex align-items-center">
                 <div className="p-3">
                   <LargeLoading show={loading} />
                   {product ? (
@@ -223,28 +238,35 @@ export default function CheckoutProduct() {
                               multiline={true}
                             />
                           </Stack>
-                          <div className="">
-                            <PrimaryButton
-                              endIcon={<ArrowForwardIos />}
-                              loading={recording}
-                              label="checkout"
-                              onClick={() => {
-                                handleFlutterPayment({
-                                  callback: (response) => {
-                                    //console.log(response);
-                                    response.customer.address =
-                                      userForm.address;
-                                    response.customer.phone_number =
-                                      userForm.phone_number;
 
-                                    recordTransaction(response);
-                                    setUserForm(defaultData);
-                                    closePaymentModal(); // this will close the modal programmatically
-                                  },
-                                  onClose: () => {},
-                                });
-                              }}
-                            />
+                          <div className="">
+                            <hr />
+                            <div className="mb-2">
+                              <Typography variant="body2">
+                                To purchase an item you'll have to sign in with
+                                us
+                              </Typography>
+                            </div>
+                            <Stack direction={"row"} spacing={2}>
+                              <div className="d-flex align-items-center">
+                                <GoogleLogin
+                                  onSuccess={handleLogin}
+                                  onError={handleFailure}
+                                ></GoogleLogin>
+                              </div>
+                              <div className="d-flex align-items-center">
+                                <Typography variant="body2">or</Typography>
+                              </div>
+                              <div>
+                                <FacebookLogin
+                                  appId={process.env.REACT_APP_FACEBOOK_ID}
+                                  autoLoad={true}
+                                  fields="name,email,picture"
+                                  // onClick={componentClicked}
+                                  callback={responseFacebook}
+                                ></FacebookLogin>
+                              </div>
+                            </Stack>
                           </div>
                         </div>
                       </div>

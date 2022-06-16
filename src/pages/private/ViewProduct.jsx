@@ -14,7 +14,6 @@ import { httpService } from "../../services/services";
 import { PrimaryButton, PrimaryTextButton } from "../../components/MyButtons";
 import { UploadFile, PhotoCamera } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import ReactJsAlert from "reactjs-alert";
 
 const Input = styled("input")({
   display: "none",
@@ -25,7 +24,7 @@ export default function ViewProduct() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState([]);
-  const [progress, setProgress] = React.useState(10);
+  const [progress] = React.useState(10);
   const changeHandler = (event) => {
     for (let i = 0; i < event.target.files.length; i++) {
       if (event.target.files[i].size < 1000000) {

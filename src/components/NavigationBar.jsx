@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import { loggedInUser, handleLogout } from "../services/services";
-import { Badge, Typography } from "@mui/material";
+import { loggedInUser, handleLogout, facebookUser } from "../services/services";
+import { Typography } from "@mui/material";
 import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
-import { Login, Logout, Notifications } from "@mui/icons-material";
+import { Login, Logout } from "@mui/icons-material";
 import brand from "../assets/images/brand.png";
 import "./NavigationBar.css";
 
@@ -18,6 +18,8 @@ export default function NavigationBar() {
   };
 
   window.addEventListener("scroll", changeBg);
+  // console.log(facebookUser);
+
   return (
     <Navbar
       expand="lg"
@@ -38,11 +40,7 @@ export default function NavigationBar() {
           <Nav className="ms-auto">
             {loggedInUser ? (
               <>
-                <Nav.Link>
-                  {/* <Badge color="error" badgeContent={adminNotifications}>
-                    <Notifications />
-                  </Badge> */}
-                </Nav.Link>
+                <Nav.Link></Nav.Link>
                 <Nav.Link>
                   <Typography>{loggedInUser.name.split(" ")[0]}</Typography>
                 </Nav.Link>

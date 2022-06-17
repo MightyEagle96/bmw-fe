@@ -6,6 +6,12 @@ const devUrl = "http://localhost:2207/";
 
 const prodUrl = "https://bmwnaija.herokuapp.com/";
 
+export const authenitcateFacebook = async (token) => {
+  const path = `https://graph.facebook.com/me?access_token=${token}`;
+  const res = await axios.get(path);
+  return res;
+};
+
 export const backendUrl =
   process.env.REACT_APP_ENV === "production" ? prodUrl : devUrl;
 
@@ -13,6 +19,8 @@ const AUTH_TOKEN = localStorage.getItem(process.env.REACT_APP_TOKEN) || "glory";
 
 export const loggedInUser =
   JSON.parse(localStorage.getItem(process.env.REACT_APP_PROJECT_NAME)) || null;
+
+export const facebookUser = localStorage.getItem("facebookData");
 
 export const httpService = axios.create({
   baseURL: backendUrl,

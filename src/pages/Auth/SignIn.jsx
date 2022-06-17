@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import TextInputComponent from "../../components/TextInputComponent";
-import { httpService } from "../../services/services";
+import { authenitcateFacebook, httpService } from "../../services/services";
 import { PrimaryButton } from "../../components/MyButtons";
 import MyGutterBottom from "../../components/MyGutterBottom";
 import { GoogleLogin } from "@react-oauth/google";
@@ -49,10 +49,16 @@ export default function SignIn() {
     localStorage.setItem("googleData", googleData);
   };
 
-  const responseFacebook = (response) => {
+  const responseFacebook = async (response) => {
     console.log(response);
-    localStorage.setItem("facebookData", response);
+
+    localStorage.setItem("facebookData", JSON.stringify(response));
+
+    const path = "facebookAccount";
+
+    await httpService.post(path, response);
   };
+
   return (
     <div>
       <Container>

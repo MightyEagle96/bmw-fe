@@ -109,6 +109,7 @@ export default function CheckoutProduct() {
   };
   return (
     <div>
+      <MyGutterBottom />
       <Container>
         <ReactJsAlert
           status={alertObject.status} // true or false
@@ -120,8 +121,8 @@ export default function CheckoutProduct() {
           Close={() => setAlertObject({ ...alertObject, status: false })}
           // Close={() => setStatus(false)}
         />
-        <MyGutterBottom />
-        <div className="d-none d-md-block mb-3">
+
+        <div className="d-none d-md-block mb-3 shadow">
           <div className="">
             <Row>
               <div className="col-md-6 border-end d-flex align-items-center">
@@ -263,7 +264,7 @@ export default function CheckoutProduct() {
                               <div>
                                 <FacebookLogin
                                   appId={process.env.REACT_APP_FACEBOOK_ID}
-                                  autoLoad={true}
+                                  autoLoad={false}
                                   fields="name,email,picture"
                                   // onClick={componentClicked}
                                   callback={responseFacebook}

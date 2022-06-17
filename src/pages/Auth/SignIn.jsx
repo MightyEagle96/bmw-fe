@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import TextInputComponent from "../../components/TextInputComponent";
@@ -59,56 +59,58 @@ export default function SignIn() {
         <div className="p-4 d-none d-md-block">
           <MyGutterBottom />
           <div className="d-flex justify-content-center">
-            <div className="col-md-5">
-              <div>
-                <Typography
-                  variant="body1"
-                  color="GrayText"
-                  textAlign={"center"}
-                >
-                  Sign in to your bwm-naija account
-                </Typography>
-              </div>
-              <div className=" mt-3">
-                <form onSubmit={Login}>
-                  <TextInputComponent
-                    label={"Email Address"}
-                    name="email"
-                    handleChange={handleChange}
-                    value={account.email}
-                    required={true}
-                  />
-                  <TextInputComponent
-                    label={"Password"}
-                    name="password"
-                    type="password"
-                    handleChange={handleChange}
-                    value={account.password}
-                    required={true}
-                  />
-                  <PrimaryButton
-                    label={"Sign in"}
-                    fullWidth={true}
-                    type={"submit"}
-                    loading={loading}
-                  />
-                </form>
-                <div className="mt-3">
-                  <div className="d-flex justify-content-between">
-                    <div className="d-flex align-items-center">
-                      <GoogleLogin
-                        onSuccess={handleLogin}
-                        onError={handleFailure}
-                      ></GoogleLogin>
-                    </div>
-                    <div>
-                      <FacebookLogin
-                        appId={process.env.REACT_APP_FACEBOOK_ID}
-                        autoLoad={true}
-                        fields="name,email,picture"
-                        // onClick={componentClicked}
-                        callback={responseFacebook}
-                      ></FacebookLogin>
+            <div className=" ">
+              <div className="">
+                <div>
+                  <Typography
+                    variant="body1"
+                    color="GrayText"
+                    textAlign={"center"}
+                  >
+                    Sign in to your bwm-naija account
+                  </Typography>
+                </div>
+                <div className=" mt-3">
+                  <form onSubmit={Login}>
+                    <TextInputComponent
+                      label={"Email Address"}
+                      name="email"
+                      handleChange={handleChange}
+                      value={account.email}
+                      required={true}
+                    />
+                    <TextInputComponent
+                      label={"Password"}
+                      name="password"
+                      type="password"
+                      handleChange={handleChange}
+                      value={account.password}
+                      required={true}
+                    />
+                    <PrimaryButton
+                      label={"Sign in"}
+                      fullWidth={true}
+                      type={"submit"}
+                      loading={loading}
+                    />
+                  </form>
+                  <div className="mt-3">
+                    <div className="d-flex justify-content-between">
+                      <div className="d-flex align-items-center">
+                        <GoogleLogin
+                          onSuccess={handleLogin}
+                          onError={handleFailure}
+                        ></GoogleLogin>
+                      </div>
+                      <div>
+                        <FacebookLogin
+                          appId={process.env.REACT_APP_FACEBOOK_ID}
+                          autoLoad={false}
+                          fields="name,email,picture"
+                          // onClick={componentClicked}
+                          callback={responseFacebook}
+                        ></FacebookLogin>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -148,21 +150,44 @@ export default function SignIn() {
               </form>
             </div>
             <div className="mt-3">
-              <div className="d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <GoogleLogin
-                    onSuccess={handleLogin}
-                    onError={handleFailure}
-                  ></GoogleLogin>
+              <div className="d-none d-sm-block">
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <GoogleLogin
+                      onSuccess={handleLogin}
+                      onError={handleFailure}
+                    ></GoogleLogin>
+                  </div>
+                  <div>
+                    <FacebookLogin
+                      appId={process.env.REACT_APP_FACEBOOK_ID}
+                      autoLoad={false}
+                      fields="name,email,picture"
+                      // onClick={componentClicked}
+                      callback={responseFacebook}
+                    ></FacebookLogin>
+                  </div>
                 </div>
-                <div>
-                  <FacebookLogin
-                    appId={process.env.REACT_APP_FACEBOOK_ID}
-                    autoLoad={true}
-                    fields="name,email,picture"
-                    // onClick={componentClicked}
-                    callback={responseFacebook}
-                  ></FacebookLogin>
+              </div>
+              <div className="d-xs-block d-sm-none">
+                <div className="d-flex justify-content-center">
+                  <Stack spacing={2}>
+                    <div className="d-flex justify-content-center">
+                      <GoogleLogin
+                        onSuccess={handleLogin}
+                        onError={handleFailure}
+                      ></GoogleLogin>
+                    </div>
+                    <div className="d-flex justify-content-center">
+                      <FacebookLogin
+                        appId={process.env.REACT_APP_FACEBOOK_ID}
+                        autoLoad={false}
+                        fields="name,email,picture"
+                        // onClick={componentClicked}
+                        callback={responseFacebook}
+                      ></FacebookLogin>
+                    </div>
+                  </Stack>
                 </div>
               </div>
             </div>

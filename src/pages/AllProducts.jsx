@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 import Loading from "../assets/aesthetics/Loading";
 import { httpService } from "../services/services";
 import ProductCard from "../components/ProductCard";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, TextField, Pagination } from "@mui/material";
 import { theme } from "../utils/labels";
 import MyGutterBottom from "../components/MyGutterBottom";
 import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
@@ -16,7 +16,7 @@ export default function AllProducts() {
   const GetProducts = async () => {
     try {
       setLoading(true);
-      const path = "viewProducts";
+      const path = "viewProducts?limit=10";
       const res = await httpService.get(path);
       if (res) {
         setProducts(res.data.products);
@@ -61,6 +61,9 @@ export default function AllProducts() {
             </Stack>
           </div>
           <div className="">
+            <div className="mb-2 d-flex justify-content-center">
+              <TextField type={"search"} label="Search Products" />
+            </div>
             <div className="d-flex flex-wrap justify-content-center">
               {products.map((product, i) => (
                 <ProductCard
@@ -71,6 +74,9 @@ export default function AllProducts() {
                   imageUrl={product.imageUrls[0]}
                 />
               ))}
+            </div>
+            <div className="d-flex justify-content-center mt-3 mb-3">
+              <Pagination count={10} color="primary" />
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { httpService } from "../../services/services";
+import { httpService, authenitcateFacebook } from "../../services/services";
 import brand from "../../assets/images/brand.png";
 import { Avatar, Stack, Typography } from "@mui/material";
 import { PrimaryButton, SecondaryIconButton } from "../../components/MyButtons";
@@ -18,13 +18,19 @@ import ReactJsAlert from "reactjs-alert";
 import MyGutterBottom from "../../components/MyGutterBottom";
 import { GoogleLogin } from "@react-oauth/google";
 import FacebookLogin from "react-facebook-login";
+import { useSelector, useDispatch } from "react-redux";
+import { signIn } from "../../actions";
 
 export default function CheckoutProduct() {
+  const loggedUser = useSelector((state) => state.loggedUser);
+
   const [loading, setLoading] = useState(false);
 
   const [recording, setRecording] = useState(false);
 
   const [alertObject, setAlertObject] = useState({});
+
+  const dispatch = useDispatch();
 
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -74,7 +80,15 @@ export default function CheckoutProduct() {
 
   const handleFlutterPayment = useFlutterwave(config);
 
+  const getFacebookToken = async () => {
+    const facebookUser = JSON.parse(localStorage.getItem("facebookData"));
+    if (facebookUser) {
+      const res = await authenitcateFacebook(facebookUser.accessToken);
+      res ? dispatch(signIn(facebookUser)) : dispatch(signIn(null));
+    }
+  };
   useEffect(() => {
+    getFacebookToken();
     ViewProduct();
   }, []);
 
@@ -104,8 +118,9 @@ export default function CheckoutProduct() {
   };
 
   const responseFacebook = (response) => {
-    console.log(response);
-    localStorage.setItem("facebookData", response);
+    localStorage.setItem("facebookData", JSON.stringify(response));
+
+    dispatch(signIn(response));
   };
   return (
     <div>
@@ -243,34 +258,41 @@ export default function CheckoutProduct() {
 
                           <div className="">
                             <hr />
-                            <div className="mb-2">
-                              <Typography variant="body2">
-                                To purchase an item you'll have to sign in with
-                                us
-                              </Typography>
-                            </div>
-                            <Stack direction={"row"} spacing={2}>
-                              <div className="d-flex align-items-center">
-                                <GoogleLogin
-                                  onSuccess={handleLogin}
-                                  onError={handleFailure}
-                                ></GoogleLogin>
-                              </div>
-                              <div className="d-flex align-items-center">
-                                <Typography variant="body2" color="GrayText">
-                                  or
-                                </Typography>
-                              </div>
+                            <div className="mb-2"></div>
+                            {loggedUser ? (
+                              "hello"
+                            ) : (
                               <div>
-                                <FacebookLogin
-                                  appId={process.env.REACT_APP_FACEBOOK_ID}
-                                  autoLoad={false}
-                                  fields="name,email,picture"
-                                  // onClick={componentClicked}
-                                  callback={responseFacebook}
-                                ></FacebookLogin>
+                                <Typography>
+                                  To purchase an item you must be logged in
+                                </Typography>
+                                <Stack direction={"row"} spacing={2}>
+                                  <div className="d-flex align-items-center">
+                                    <GoogleLogin
+                                      onSuccess={handleLogin}
+                                      onError={handleFailure}
+                                    ></GoogleLogin>
+                                  </div>
+                                  <div className="d-flex align-items-center">
+                                    <Typography
+                                      variant="body2"
+                                      color="GrayText"
+                                    >
+                                      or
+                                    </Typography>
+                                  </div>
+                                  <div>
+                                    <FacebookLogin
+                                      appId={process.env.REACT_APP_FACEBOOK_ID}
+                                      autoLoad={false}
+                                      fields="name,email,picture"
+                                      // onClick={componentClicked}
+                                      callback={responseFacebook}
+                                    ></FacebookLogin>
+                                  </div>
+                                </Stack>
                               </div>
-                            </Stack>
+                            )}
                           </div>
                         </div>
                       </div>

@@ -7,9 +7,16 @@ const devUrl = "http://localhost:2207/";
 const prodUrl = "https://bmwnaija.herokuapp.com/";
 
 export const authenitcateFacebook = async (token) => {
-  const path = `https://graph.facebook.com/me?access_token=${token}`;
-  const res = await axios.get(path);
-  return res;
+  try {
+    const path = `https://graph.facebook.com/me?access_token=${token}`;
+    const res = await axios.get(path);
+
+    return res;
+  } catch (error) {
+    //if there is no response clear the storage
+    localStorage.removeItem("facebookData");
+    console.error(error.response);
+  }
 };
 
 export const backendUrl =

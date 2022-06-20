@@ -5,24 +5,23 @@ import { httpService, authenitcateFacebook } from "../../services/services";
 import brand from "../../assets/images/brand.png";
 import { Avatar, Stack, Typography } from "@mui/material";
 import { PrimaryButton, SecondaryIconButton } from "../../components/MyButtons";
-import {
-  ArrowDownward,
-  ArrowForwardIos,
-  ArrowUpward,
-} from "@mui/icons-material";
+import { ArrowDownward, CreditCard, ArrowUpward } from "@mui/icons-material";
 import TextInputComponent from "../../components/TextInputComponent";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
-import { LargeLoading } from "../../assets/aesthetics/Loading";
+import Loading, { LargeLoading } from "../../assets/aesthetics/Loading";
 import { Carousel } from "react-bootstrap";
 import ReactJsAlert from "reactjs-alert";
 import MyGutterBottom from "../../components/MyGutterBottom";
 import { GoogleLogin } from "@react-oauth/google";
 import FacebookLogin from "react-facebook-login";
 import { useSelector, useDispatch } from "react-redux";
-import { signIn } from "../../actions";
+import { signIn, socialType } from "../../actions";
 
 export default function CheckoutProduct() {
+  const [signInLogin, setSignInLogin] = useState(false);
   const loggedUser = useSelector((state) => state.loggedUser);
+
+  const social_type = useSelector((state) => state.socialType);
 
   const [loading, setLoading] = useState(false);
 
@@ -85,6 +84,9 @@ export default function CheckoutProduct() {
     if (facebookUser) {
       const res = await authenitcateFacebook(facebookUser.accessToken);
       res ? dispatch(signIn(facebookUser)) : dispatch(signIn(null));
+      if (res) {
+        dispatch(socialType("fb"));
+      }
     }
   };
   useEffect(() => {
@@ -93,20 +95,26 @@ export default function CheckoutProduct() {
   }, []);
 
   const recordTransaction = async (response) => {
-    const path = "recordPayment";
+    try {
+      setRecording(true);
+      const path = "recordPayment";
 
-    const res = await httpService.post(path, {
-      ...response,
-      product: product._id,
-      quantity,
-      account: product.account,
-    });
+      const res = await httpService.post(path, {
+        ...response,
+        product: product._id,
+        quantity,
+        account: product.account,
+        socialType: social_type,
+        user: loggedUser._id,
+      });
 
-    if (res) {
-      setAlertObject(res.data);
+      if (res) {
+        setAlertObject(res.data);
+      }
+      setRecording(false);
+    } catch (error) {
+      setRecording(false);
     }
-
-    // console.log(res);
   };
 
   const handleFailure = (result) => {
@@ -117,10 +125,22 @@ export default function CheckoutProduct() {
     localStorage.setItem("googleData", googleData);
   };
 
-  const responseFacebook = (response) => {
-    localStorage.setItem("facebookData", JSON.stringify(response));
+  const responseFacebook = async (response) => {
+    try {
+      setSignInLogin(true);
+      const path = "facebookAccount";
 
-    dispatch(signIn(response));
+      const res = await httpService.post(path, response);
+
+      if (res) {
+        dispatch(signIn(res.data.fbUser));
+        localStorage.setItem("facebookData", JSON.stringify(res.data.fbUser));
+        dispatch(socialType("fb"));
+      }
+      setSignInLogin(false);
+    } catch (error) {
+      setSignInLogin(false);
+    }
   };
   return (
     <div>
@@ -260,10 +280,22 @@ export default function CheckoutProduct() {
                             <hr />
                             <div className="mb-2"></div>
                             {loggedUser ? (
-                              "hello"
+                              <PrimaryButton
+                                loading={recording}
+                                endIcon={<CreditCard />}
+                                label="Make payment"
+                                onClick={() => {
+                                  handleFlutterPayment({
+                                    callback: (response) => {
+                                      closePaymentModal();
+                                      recordTransaction(response);
+                                    },
+                                  });
+                                }}
+                              />
                             ) : (
                               <div>
-                                <Typography>
+                                <Typography gutterBottom variant="body2">
                                   To purchase an item you must be logged in
                                 </Typography>
                                 <Stack direction={"row"} spacing={2}>
@@ -289,6 +321,9 @@ export default function CheckoutProduct() {
                                       // onClick={componentClicked}
                                       callback={responseFacebook}
                                     ></FacebookLogin>
+                                  </div>
+                                  <div className="d-flex align-items-center">
+                                    <Loading show={signInLogin} />
                                   </div>
                                 </Stack>
                               </div>

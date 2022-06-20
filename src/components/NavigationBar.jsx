@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import { loggedInUser, handleLogout } from "../services/services";
+// import { handleLogout } from "../services/services";
 import { Avatar, Typography } from "@mui/material";
 import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
 import { Login, Logout } from "@mui/icons-material";
@@ -20,6 +20,11 @@ export default function NavigationBar() {
     if (window.scrollY > 80) {
       setNavbar(true);
     } else setNavbar(false);
+  };
+
+  const logout = () => {
+    dispatch(signIn(null));
+    localStorage.removeItem("facebookData");
   };
 
   window.addEventListener("scroll", changeBg);
@@ -61,7 +66,7 @@ export default function NavigationBar() {
                 <Nav.Link>
                   <Typography>{loggedUser.name.split(" ")[0]}</Typography>
                 </Nav.Link>
-                <Nav.Link component="button" onClick={handleLogout}>
+                <Nav.Link component="button" onClick={logout}>
                   Logout
                   <span className="ms-1">
                     <Logout />

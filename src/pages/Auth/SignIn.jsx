@@ -50,8 +50,6 @@ export default function SignIn() {
   };
 
   const responseFacebook = async (response) => {
-    console.log(response);
-
     localStorage.setItem("facebookData", JSON.stringify(response));
 
     const path = "facebookAccount";

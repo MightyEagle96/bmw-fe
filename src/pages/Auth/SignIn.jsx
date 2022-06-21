@@ -64,7 +64,13 @@ export default function SignIn() {
 
     const path = "facebookAccount";
 
-    await httpService.post(path, response);
+    const res = await httpService.post(path, response);
+    if (res) {
+      dispatch(signIn(res.data.fbUser));
+      localStorage.setItem("facebookData", JSON.stringify(res.data.fbUser));
+      dispatch(authType("fb"));
+      window.location.assign("ourProducts");
+    }
   };
 
   return (

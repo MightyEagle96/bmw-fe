@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Navbar, Container, Nav } from "react-bootstrap";
-// import { handleLogout } from "../services/services";
-import { Avatar, Typography } from "@mui/material";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
+import { Avatar } from "@mui/material";
 import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
 import { Login, Logout } from "@mui/icons-material";
 import brand from "../assets/images/brand.png";
@@ -12,6 +11,7 @@ import { authType, signIn } from "../redux/actions";
 
 export default function NavigationBar() {
   const loggedUser = useSelector((state) => state.loggedUser);
+  const auth_type = useSelector((state) => state.authType);
   const dispatch = useDispatch();
   const { theme } = useContext(ChangeNavbarTheme);
   const [navbar, setNavbar] = useState(false);
@@ -42,7 +42,6 @@ export default function NavigationBar() {
         dispatch(authType(""));
         dispatch(signIn(null));
       }
-      // res ? dispatch(signIn(facebookUser)) : dispatch(signIn(null));
     }
   };
 
@@ -64,6 +63,7 @@ export default function NavigationBar() {
     getFacebookToken();
     getJWTUser();
   }, []);
+
   return (
     <Navbar
       expand="lg"
@@ -78,8 +78,18 @@ export default function NavigationBar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/ourProducts">Our Products</Nav.Link>
+            {auth_type === "fb" || authType === "google" ? (
+              <>
+                {" "}
+                <Nav.Link href="/ourProducts">Our Products</Nav.Link>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Nav.Link href="/">Home</Nav.Link>
+                <Nav.Link href="/ourProducts">Our Products</Nav.Link>
+              </>
+            )}
           </Nav>
           <Nav className="ms-auto">
             {loggedUser ? (
@@ -89,9 +99,18 @@ export default function NavigationBar() {
                     src={loggedUser.picture ? loggedUser.picture.data.url : ""}
                   />
                 </Nav.Link>
-                <Nav.Link>
-                  <Typography>{loggedUser.name.split(" ")[0]}</Typography>
-                </Nav.Link>
+                {auth_type === "google" || auth_type === "fb" ? (
+                  <NavDropdown title={loggedUser.name.split(" ")[0]}>
+                    <NavDropdown.Item href="/myOrders">
+                      My Orders
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="#action4">
+                      Another action
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                ) : (
+                  <Nav.Link>{loggedUser.name.split(" ")[0]}</Nav.Link>
+                )}
                 <Nav.Link component="button" onClick={logout}>
                   Logout
                   <span className="ms-1">

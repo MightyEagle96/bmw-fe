@@ -8,7 +8,7 @@ import brand from "../assets/images/brand.png";
 import "./NavigationBar.css";
 import { authenitcateFacebook } from "../services/services";
 import { useSelector, useDispatch } from "react-redux";
-import { signIn } from "../redux/actions";
+import { authType, signIn } from "../redux/actions";
 
 export default function NavigationBar() {
   const loggedUser = useSelector((state) => state.loggedUser);
@@ -35,7 +35,14 @@ export default function NavigationBar() {
     const facebookUser = JSON.parse(localStorage.getItem("facebookData"));
     if (facebookUser) {
       const res = await authenitcateFacebook(facebookUser.accessToken);
-      res ? dispatch(signIn(facebookUser)) : dispatch(signIn(null));
+      if (res) {
+        dispatch(authType("fb"));
+        dispatch(signIn(facebookUser));
+      } else {
+        dispatch(authType(""));
+        dispatch(signIn(null));
+      }
+      // res ? dispatch(signIn(facebookUser)) : dispatch(signIn(null));
     }
   };
 
@@ -44,8 +51,13 @@ export default function NavigationBar() {
       localStorage.getItem(process.env.REACT_APP_PROJECT_NAME)
     );
 
-    if (jwtUser) dispatch(signIn(jwtUser));
-    else dispatch(signIn(null));
+    if (jwtUser) {
+      dispatch(signIn(jwtUser));
+      dispatch(authType("jwt"));
+    } else {
+      dispatch(authType(""));
+      dispatch(signIn(null));
+    }
   };
 
   useEffect(() => {

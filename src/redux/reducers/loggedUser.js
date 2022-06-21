@@ -1,4 +1,4 @@
-const authReducer = (state = null, action) => {
+const loggedUserReducer = (state = null, action) => {
   switch (action.type) {
     case "SIGN_IN":
       return (state = action.payload);
@@ -8,4 +8,4 @@ const authReducer = (state = null, action) => {
   }
 };
 
-export default authReducer;
+export default loggedUserReducer;

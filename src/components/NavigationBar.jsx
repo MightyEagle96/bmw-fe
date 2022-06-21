@@ -8,7 +8,7 @@ import brand from "../assets/images/brand.png";
 import "./NavigationBar.css";
 import { authenitcateFacebook } from "../services/services";
 import { useSelector, useDispatch } from "react-redux";
-import { signIn } from "../actions";
+import { signIn } from "../redux/actions";
 
 export default function NavigationBar() {
   const loggedUser = useSelector((state) => state.loggedUser);
@@ -25,6 +25,8 @@ export default function NavigationBar() {
   const logout = () => {
     dispatch(signIn(null));
     localStorage.removeItem("facebookData");
+    localStorage.removeItem(process.env.REACT_APP_PROJECT_NAME);
+    window.location.assign("/login");
   };
 
   window.addEventListener("scroll", changeBg);
@@ -37,8 +39,18 @@ export default function NavigationBar() {
     }
   };
 
+  const getJWTUser = () => {
+    const jwtUser = JSON.parse(
+      localStorage.getItem(process.env.REACT_APP_PROJECT_NAME)
+    );
+
+    if (jwtUser) dispatch(signIn(jwtUser));
+    else dispatch(signIn(null));
+  };
+
   useEffect(() => {
     getFacebookToken();
+    getJWTUser();
   }, []);
   return (
     <Navbar
@@ -61,7 +73,9 @@ export default function NavigationBar() {
             {loggedUser ? (
               <>
                 <Nav.Link>
-                  <Avatar src={loggedUser.picture.data.url} />
+                  <Avatar
+                    src={loggedUser.picture ? loggedUser.picture.data.url : ""}
+                  />
                 </Nav.Link>
                 <Nav.Link>
                   <Typography>{loggedUser.name.split(" ")[0]}</Typography>

@@ -15,13 +15,13 @@ import MyGutterBottom from "../../components/MyGutterBottom";
 import { GoogleLogin } from "@react-oauth/google";
 import FacebookLogin from "react-facebook-login";
 import { useSelector, useDispatch } from "react-redux";
-import { signIn, socialType } from "../../actions";
+import { signIn, authType } from "../../redux/actions";
 
 export default function CheckoutProduct() {
   const [signInLogin, setSignInLogin] = useState(false);
   const loggedUser = useSelector((state) => state.loggedUser);
 
-  const social_type = useSelector((state) => state.socialType);
+  const social_type = useSelector((state) => state.authType);
 
   const [loading, setLoading] = useState(false);
 
@@ -85,7 +85,7 @@ export default function CheckoutProduct() {
       const res = await authenitcateFacebook(facebookUser.accessToken);
       res ? dispatch(signIn(facebookUser)) : dispatch(signIn(null));
       if (res) {
-        dispatch(socialType("fb"));
+        dispatch(authType("fb"));
       }
     }
   };
@@ -135,7 +135,7 @@ export default function CheckoutProduct() {
       if (res) {
         dispatch(signIn(res.data.fbUser));
         localStorage.setItem("facebookData", JSON.stringify(res.data.fbUser));
-        dispatch(socialType("fb"));
+        dispatch(authType("fb"));
       }
       setSignInLogin(false);
     } catch (error) {

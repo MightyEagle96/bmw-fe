@@ -1,6 +1,6 @@
-const socialReducer = (state = "", action) => {
+const authTypeReducer = (state = "", action) => {
   switch (action.type) {
-    case "SOCIAL_TYPE":
+    case "AUTH_TYPE":
       return (state = action.payload);
 
     default:
@@ -8,4 +8,4 @@ const socialReducer = (state = "", action) => {
   }
 };
 
-export default socialReducer;
+export default authTypeReducer;

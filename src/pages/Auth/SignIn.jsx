@@ -7,13 +7,19 @@ import { PrimaryButton } from "../../components/MyButtons";
 import MyGutterBottom from "../../components/MyGutterBottom";
 import { GoogleLogin } from "@react-oauth/google";
 import FacebookLogin from "react-facebook-login";
+import { useDispatch } from "react-redux";
+import { signIn, authType } from "../../redux/actions";
 
 export default function SignIn() {
+  // const auth_type = useSelector((state) => state.authType);
+  // const loggedUser = useSelector((state) => state.loggedUser);
+
   const [loading, setLoading] = useState(false);
 
   const defaultData = { email: "", password: "" };
   const [account, setAccount] = useState(defaultData);
 
+  const dispatch = useDispatch();
   const Login = async (e) => {
     e.preventDefault();
 
@@ -21,12 +27,16 @@ export default function SignIn() {
       setLoading(true);
       const path = "login";
       const res = await httpService.post(path, account);
+
       if (res) {
         localStorage.setItem(process.env.REACT_APP_TOKEN, res.data.accessToken);
         localStorage.setItem(
           process.env.REACT_APP_PROJECT_NAME,
           JSON.stringify(res.data.user)
         );
+
+        dispatch(authType("jwt"));
+        dispatch(signIn(res.data.user));
         window.location.assign("/");
       }
 

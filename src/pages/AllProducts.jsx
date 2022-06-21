@@ -10,6 +10,8 @@ import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
   const [loading, setLoading] = useState(false);
   const { setTheme } = useContext(ChangeNavbarTheme);
 
@@ -20,6 +22,8 @@ export default function AllProducts() {
       const res = await httpService.get(path);
       if (res) {
         setProducts(res.data.products);
+        setFilteredProducts(res.data.products);
+        //filteredProducts = res.data.products;
       }
       setLoading(false);
     } catch (error) {
@@ -62,10 +66,27 @@ export default function AllProducts() {
           </div>
           <div className="">
             <div className="mb-2 d-flex justify-content-center">
-              <TextField type={"search"} label="Search Products" />
+              <TextField
+                type={"search"}
+                label="Search Products"
+                onChange={(e) => {
+                  // console.log();
+                  setFilteredProducts(
+                    products.filter((product) => {
+                      if (
+                        product.title
+                          .toLowerCase()
+                          .includes(e.target.value.toLowerCase())
+                      ) {
+                        return product;
+                      }
+                    })
+                  );
+                }}
+              />
             </div>
             <div className="d-flex flex-wrap justify-content-center">
-              {products.map((product, i) => (
+              {filteredProducts.map((product, i) => (
                 <ProductCard
                   key={i}
                   title={product.title}

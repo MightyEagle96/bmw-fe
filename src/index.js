@@ -7,7 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 import allReducers from "./redux/reducers";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
-
+import { Lines } from "react-preloaders2";
 const store = createStore(
   allReducers,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
@@ -17,6 +17,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <App />
+      <Lines animation="slide-down" />
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

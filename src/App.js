@@ -11,6 +11,7 @@ import SideMenuComponent from "./components/SideMenuComponent";
 import Footer from "./components/Footer";
 import { ChangeNavbarTheme } from "./Contexts/ReloadContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+
 function App() {
   const [theme, setTheme] = useState("");
 

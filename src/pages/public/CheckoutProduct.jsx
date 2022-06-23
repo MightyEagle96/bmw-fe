@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { httpService, authenitcateFacebook } from "../../services/services";
@@ -16,8 +16,11 @@ import { GoogleLogin } from "@react-oauth/google";
 import FacebookLogin from "react-facebook-login";
 import { useSelector, useDispatch } from "react-redux";
 import { signIn, authType } from "../../redux/actions";
+import { ChangeNavbarTheme } from "../../Contexts/ReloadContext";
 
 export default function CheckoutProduct() {
+  const { setTheme } = useContext(ChangeNavbarTheme);
+
   const [signInLogin, setSignInLogin] = useState(false);
   const loggedUser = useSelector((state) => state.loggedUser);
 
@@ -89,9 +92,18 @@ export default function CheckoutProduct() {
       }
     }
   };
+  const changeTheme = () => {
+    if (window.scrollY > 80) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  };
+  window.addEventListener("scroll", changeTheme);
   useEffect(() => {
     getFacebookToken();
     ViewProduct();
+    setTheme("light");
   }, []);
 
   const recordTransaction = async (response) => {

@@ -6,7 +6,7 @@ import "./Footer.css";
 
 export default function Footer() {
   return (
-    <div className="footer p-3  ">
+    <div className="footer p-5  ">
       <div>
         <Container>
           <Typography fontWeight={700} color="GrayText" className="text-center">

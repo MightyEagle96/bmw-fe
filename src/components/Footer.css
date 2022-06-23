@@ -1,4 +1,4 @@
 .footer {
-  height: 20vh;
+  height: max-content;
   background-color: rgb(231, 231, 231);
 }

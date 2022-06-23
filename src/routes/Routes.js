@@ -22,7 +22,7 @@ const publicRoutes = [
   { path: "/create_vendor", component: CreateVendor },
   { path: "/validateAccount", component: ValidateAccount },
   { path: "/accountValidated/:token", component: AccountValidated },
-
+  { path: "product/:id", component: CheckoutProduct },
   { path: "/ourProducts", component: AllProducts },
   { path: "*", component: NotFound },
 ];

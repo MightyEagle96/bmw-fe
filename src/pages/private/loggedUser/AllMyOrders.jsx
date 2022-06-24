@@ -93,7 +93,7 @@ export default function AllMyOrders() {
                     Quantity:
                   </Typography>
                   <Typography variant="h6" color="GrayText">
-                    {order.product.quantity}
+                    {order.quantity}
                   </Typography>
                 </div>
                 <div className="col-md-2">
@@ -113,11 +113,7 @@ export default function AllMyOrders() {
                   </Typography>
                   <Typography variant="h6" color="GrayText">
                     <i class="fas fa-dollar-sign    "></i>{" "}
-                    {order.product.amount
-                      ? (
-                          order.product.quantity * order.product.amount
-                        ).toLocaleString()
-                      : 0}
+                    {order.amount.toLocaleString()}
                   </Typography>
                 </div>
                 <div className="col-md-2">

@@ -41,7 +41,12 @@ export default function CheckoutProduct() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   let [quantity, setQuantity] = useState(1);
-  const defaultData = { name: "", address: "", phone_number: "", email: "" };
+  const defaultData = {
+    name: "",
+    address: "",
+    phone_number: "",
+    email: "",
+  };
   const [userForm, setUserForm] = useState(defaultData);
 
   const config = {
@@ -275,6 +280,7 @@ export default function CheckoutProduct() {
                               label="Name"
                               name="name"
                               handleChange={handleChange}
+                              value={userForm.name}
                             />
                             <TextInputComponent
                               label="Email"

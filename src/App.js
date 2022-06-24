@@ -20,12 +20,10 @@ function App() {
       <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
         <ChangeNavbarTheme.Provider value={{ theme, setTheme }}>
           <NavigationBar />
-
+          <div className="p-4"></div>
+          <div className="p-1"></div>
           {loggedInUser ? (
             <>
-              <div className="p-4"></div>
-              <div className="p-1"></div>
-
               <Row>
                 <div
                   className="col-md-3"

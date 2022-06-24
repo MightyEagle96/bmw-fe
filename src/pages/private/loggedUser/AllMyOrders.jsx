@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import MyGutterBottom from "../../../components/MyGutterBottom";
 import { httpService } from "../../../services/services";
@@ -6,14 +6,13 @@ import { useSelector } from "react-redux";
 import { Stack, Typography } from "@mui/material";
 import { theme } from "../../../utils/labels";
 import { Done, Email, Pending, Phone } from "@mui/icons-material";
-import { ChangeNavbarTheme } from "../../../Contexts/ReloadContext";
 
 export default function AllMyOrders() {
   const authType = useSelector((state) => state.authType);
   const loggedUser = useSelector((state) => state.loggedUser);
 
   const [orders, setOrders] = useState([]);
-  const { setTheme } = useContext(ChangeNavbarTheme);
+
   const getOrders = async () => {
     const path =
       authType === "fb"
@@ -27,14 +26,6 @@ export default function AllMyOrders() {
     }
   };
 
-  const changeTheme = () => {
-    if (window.scrollY > 80) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-  };
-  window.addEventListener("scroll", changeTheme);
   useEffect(() => {
     getOrders();
   }, []);

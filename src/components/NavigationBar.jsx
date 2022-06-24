@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Avatar } from "@mui/material";
-import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
+
 import { Login, Logout } from "@mui/icons-material";
 import brand from "../assets/images/brand.png";
 import "./NavigationBar.css";
@@ -14,14 +14,6 @@ export default function NavigationBar() {
 
   const auth_type = useSelector((state) => state.authType);
   const dispatch = useDispatch();
-  const { theme } = useContext(ChangeNavbarTheme);
-  const [navbar, setNavbar] = useState(false);
-
-  const changeBg = () => {
-    if (window.scrollY > 80) {
-      setNavbar(true);
-    } else setNavbar(false);
-  };
 
   const logout = () => {
     dispatch(signIn(null));
@@ -32,7 +24,7 @@ export default function NavigationBar() {
     window.location.assign("/login");
   };
 
-  window.addEventListener("scroll", changeBg);
+  // window.addEventListener("scroll", changeBg);
   // console.log(facebookUser);
   const getFacebookToken = async () => {
     const facebookUser = JSON.parse(localStorage.getItem("facebookData"));
@@ -87,12 +79,7 @@ export default function NavigationBar() {
   }, []);
 
   return (
-    <Navbar
-      expand="lg"
-      fixed="top"
-      className={navbar ? "navBar active" : "navbar"}
-      variant={theme || "light"}
-    >
+    <Navbar expand="lg" fixed="top" variant="light" bg="light">
       <Container>
         <Navbar.Brand href="/">
           <img src={brand} alt="brand" width="30" height="30" />

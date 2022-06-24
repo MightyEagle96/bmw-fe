@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { Container } from "react-bootstrap";
 import BMWCards from "../../components/BMWCards";
 import "./HomePage.css";
@@ -9,15 +9,8 @@ import { Button, Typography } from "@mui/material";
 
 import { redirectTo } from "../../utils/specialFunctions";
 import { SecondaryButton } from "../../components/MyButtons";
-import { ChangeNavbarTheme } from "../../Contexts/ReloadContext";
 
 export default function HomePage() {
-  const { setTheme } = useContext(ChangeNavbarTheme);
-
-  useEffect(() => {
-    setTheme("dark");
-  }, []);
-
   return (
     <div>
       <div className="headerBg text-white">

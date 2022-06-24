@@ -5,12 +5,13 @@ import { ChangeNavbarTheme } from "../Contexts/ReloadContext";
 import { Login, Logout } from "@mui/icons-material";
 import brand from "../assets/images/brand.png";
 import "./NavigationBar.css";
-import { authenitcateFacebook } from "../services/services";
+import { authenitcateFacebook, httpService } from "../services/services";
 import { useSelector, useDispatch } from "react-redux";
 import { authType, signIn } from "../redux/actions";
 
 export default function NavigationBar() {
   const loggedUser = useSelector((state) => state.loggedUser);
+
   const auth_type = useSelector((state) => state.authType);
   const dispatch = useDispatch();
   const { theme } = useContext(ChangeNavbarTheme);
@@ -25,6 +26,8 @@ export default function NavigationBar() {
   const logout = () => {
     dispatch(signIn(null));
     localStorage.removeItem("facebookData");
+    localStorage.removeItem("googleData");
+    localStorage.removeItem("jwtData");
     localStorage.removeItem(process.env.REACT_APP_PROJECT_NAME);
     window.location.assign("/login");
   };
@@ -41,6 +44,24 @@ export default function NavigationBar() {
       } else {
         dispatch(authType(""));
         dispatch(signIn(null));
+        logout();
+      }
+    }
+  };
+
+  const getGoogeUser = async () => {
+    const googleUser = JSON.parse(localStorage.getItem("googleData"));
+    if (googleUser) {
+      const path = "verifyGoogleCred";
+
+      const res = await httpService.post(path, googleUser);
+      if (res && res.data) {
+        dispatch(authType("google"));
+        dispatch(signIn(googleUser));
+      } else {
+        dispatch(authType(""));
+        dispatch(signIn(null));
+        logout();
       }
     }
   };
@@ -62,6 +83,7 @@ export default function NavigationBar() {
   useEffect(() => {
     getFacebookToken();
     getJWTUser();
+    getGoogeUser();
   }, []);
 
   return (

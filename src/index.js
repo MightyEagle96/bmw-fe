@@ -17,7 +17,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <App />
-      <Lines animation="slide-down" />
+      <Lines animation="slide" />
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

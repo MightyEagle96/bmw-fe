@@ -2,7 +2,7 @@ import { Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 import TextInputComponent from "../../components/TextInputComponent";
-import { authenitcateFacebook, httpService } from "../../services/services";
+import { httpService } from "../../services/services";
 import { PrimaryButton } from "../../components/MyButtons";
 import MyGutterBottom from "../../components/MyGutterBottom";
 import { GoogleLogin } from "@react-oauth/google";
@@ -11,9 +11,25 @@ import { useDispatch } from "react-redux";
 import { signIn, authType } from "../../redux/actions";
 
 export default function SignIn() {
-  // const auth_type = useSelector((state) => state.authType);
-  // const loggedUser = useSelector((state) => state.loggedUser);
+  function setData(authType) {
+    switch (authType) {
+      case "jwt":
+        localStorage.removeItem("facebookData");
+        localStorage.removeItem("googleData");
+        break;
+      case "fb":
+        localStorage.removeItem("jwtData");
+        localStorage.removeItem("googleData");
+        break;
+      case "google":
+        localStorage.removeItem("jwtData");
+        localStorage.removeItem("facebookData");
+        break;
 
+      default:
+        break;
+    }
+  }
   const [loading, setLoading] = useState(false);
 
   const defaultData = { email: "", password: "" };
@@ -54,9 +70,21 @@ export default function SignIn() {
   const handleFailure = (result) => {
     console.error(result);
   };
-  const handleLogin = (googleData) => {
+  const googleResponse = async (googleData) => {
     console.log(googleData);
     localStorage.setItem("googleData", googleData);
+
+    setData("google");
+    const path = "googleAccount";
+    const res = await httpService.post(path, googleData);
+    if (res) {
+      console.log(res.data);
+      setData("google");
+      window.location.assign("ourProducts");
+      localStorage.setItem("googleData", JSON.stringify(res.data.googleUser));
+      dispatch(signIn(res.data.googleUser));
+      dispatch(authType("google"));
+    }
   };
 
   const responseFacebook = async (response) => {
@@ -66,10 +94,11 @@ export default function SignIn() {
 
     const res = await httpService.post(path, response);
     if (res) {
-      dispatch(signIn(res.data.fbUser));
-      localStorage.setItem("facebookData", JSON.stringify(res.data.fbUser));
-      dispatch(authType("fb"));
+      setData("fb");
       window.location.assign("ourProducts");
+      localStorage.setItem("facebookData", JSON.stringify(res.data.fbUser));
+      dispatch(signIn(res.data.fbUser));
+      dispatch(authType("fb"));
     }
   };
 
@@ -118,7 +147,7 @@ export default function SignIn() {
                     <div className="d-flex justify-content-between">
                       <div className="d-flex align-items-center">
                         <GoogleLogin
-                          onSuccess={handleLogin}
+                          onSuccess={googleResponse}
                           onError={handleFailure}
                         ></GoogleLogin>
                       </div>
@@ -174,7 +203,7 @@ export default function SignIn() {
                 <div className="d-flex justify-content-between">
                   <div className="d-flex align-items-center">
                     <GoogleLogin
-                      onSuccess={handleLogin}
+                      onSuccess={googleResponse}
                       onError={handleFailure}
                     ></GoogleLogin>
                   </div>
@@ -194,7 +223,7 @@ export default function SignIn() {
                   <Stack spacing={2}>
                     <div className="d-flex justify-content-center">
                       <GoogleLogin
-                        onSuccess={handleLogin}
+                        onSuccess={googleResponse}
                         onError={handleFailure}
                       ></GoogleLogin>
                     </div>

@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Container, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { httpService, authenitcateFacebook } from "../../services/services";
+import {
+  setData,
+  httpService,
+  authenitcateFacebook,
+} from "../../services/services";
 import brand from "../../assets/images/brand.png";
 import { Avatar, Stack, Typography } from "@mui/material";
 import { PrimaryButton, SecondaryIconButton } from "../../components/MyButtons";
@@ -132,9 +136,21 @@ export default function CheckoutProduct() {
   const handleFailure = (result) => {
     console.error(result);
   };
-  const handleLogin = (googleData) => {
+  const googleResponse = async (googleData) => {
     console.log(googleData);
     localStorage.setItem("googleData", googleData);
+
+    setData("google");
+    const path = "googleAccount";
+    const res = await httpService.post(path, googleData);
+    if (res) {
+      console.log(res.data);
+      setData("google");
+      window.location.assign("ourProducts");
+      localStorage.setItem("googleData", JSON.stringify(res.data.googleUser));
+      dispatch(signIn(res.data.googleUser));
+      dispatch(authType("google"));
+    }
   };
 
   const responseFacebook = async (response) => {
@@ -313,7 +329,7 @@ export default function CheckoutProduct() {
                                 <Stack direction={"row"} spacing={2}>
                                   <div className="d-flex align-items-center">
                                     <GoogleLogin
-                                      onSuccess={handleLogin}
+                                      onSuccess={googleResponse}
                                       onError={handleFailure}
                                     ></GoogleLogin>
                                   </div>

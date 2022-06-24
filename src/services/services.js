@@ -6,6 +6,25 @@ const devUrl = "http://localhost:2207/";
 
 const prodUrl = "https://bmwnaija.herokuapp.com/";
 
+export function setData(authType) {
+  switch (authType) {
+    case "jwt":
+      localStorage.removeItem("facebookData");
+      localStorage.removeItem("googleData");
+      break;
+    case "fb":
+      localStorage.removeItem("jwtData");
+      localStorage.removeItem("googleData");
+      break;
+    case "google":
+      localStorage.removeItem("jwtData");
+      localStorage.removeItem("facebookData");
+      break;
+
+    default:
+      break;
+  }
+}
 export const authenitcateFacebook = async (token) => {
   try {
     const path = `https://graph.facebook.com/me?access_token=${token}`;
